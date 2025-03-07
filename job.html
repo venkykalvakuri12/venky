@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Job Seeking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f3f2ef;
+            color: #333;
+        }
+        header {
+            background-color: #D3B097;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 22px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .btn {
+            background-color: #D3B097;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .login-box {
+            width: 350px;
+            padding: 20px;
+            background: white;
+            color: #333;
+            margin: auto;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #D3B097;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        footer {
+            margin-top: 20px;
+            background-color: #f1f1f1;
+            padding: 10px;
+            color: #333;
+            text-align: center;
+        }
+        /* Hide sections by default */
+        #login, #jobs {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <span>Secure Job Seeking</span>
+        <nav>
+            <a onclick="showHome()">Home</a>
+            <a onclick="showJobs()">Jobs</a>
+            <a onclick="showLogin()">Login</a>
+        </nav>
+    </header>
+
+    <section id="home">
+        <h2>Find Your Dream Job Securely!</h2>
+        <a class="btn" onclick="showJobs()">Explore Jobs</a>
+    </section>
+
+    <section id="login">
+        <h2>Login</h2>
+        <div class="login-box">
+            <form onsubmit="return loginUser(event)">
+                <input type="email" id="email" placeholder="Email" required autocomplete="off"><br>
+                <input type="password" id="password" placeholder="Password" required autocomplete="new-password"><br>
+                <button type="submit">Login</button>
+            </form>
+            <p id="loginMessage" style="color: red;"></p>
+        </div>
+    </section>
+
+    <section id="jobs">
+        <h2>Available Jobs</h2>
+        <div id="job-listings"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Secure Job Seeking</p>
+    </footer>
+
+    <script>
+        const validCredentials = [
+            { email: "user@example.com", password: "password123" },
+            { email: "admin@example.com", password: "admin123" }
+        ];
+
+        function hideAllSections() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('jobs').style.display = 'none';
+        }
+
+        function showHome() {
+            hideAllSections();
+            document.getElementById('home').style.display = 'block';
+        }
+
+        function showJobs() {
+            hideAllSections();
+            document.getElementById('jobs').style.display = 'block';
+            displayJobs();
+        }
+
+        function showLogin() {
+            hideAllSections();
+            document.getElementById('login').style.display = 'block';
+        }
+
+        function loginUser(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginMessage = document.getElementById('loginMessage');
+
+            const user = validCredentials.find(user => user.email === email && user.password === password);
+
+            if (user) {
+                loginMessage.style.color = "green";
+                loginMessage.innerText = "Login successful!";
+                sessionStorage.setItem("loggedInUser", email);
+                showJobs();
+            } else {
+                loginMessage.style.color = "red";
+                loginMessage.innerText = "Invalid credentials!";
+            }
+        }
+
+        function displayJobs() {
+            const jobListings = [
+                { title: "Software Engineer", company: "TechCorp", location: "New York" },
+                { title: "Data Scientist", company: "DataX", location: "San Francisco" },
+                { title: "Product Manager", company: "Innovate Inc.", location: "Los Angeles" }
+            ];
+            
+            const jobListElement = document.getElementById('job-listings');
+            jobListElement.innerHTML = "";
+            
+            jobListings.forEach(job => {
+                const jobElement = document.createElement('div');
+                jobElement.classList.add('job');
+                jobElement.style.padding = "10px";
+                jobElement.style.background = "#fff";
+                jobElement.style.margin = "10px";
+                jobElement.style.borderRadius = "5px";
+                jobElement.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+
+                jobElement.innerHTML = `
+                    <h3>${job.title}</h3>
+                    <p>Company: ${job.company}</p>
+                    <p>Location: ${job.location}</p>
+                    <button onclick="applyNow('${job.title}')">Apply Now</button>
+                `;
+
+                jobListElement.appendChild(jobElement);
+            });
+        }
+
+        function applyNow(jobTitle) {
+            if (!sessionStorage.getItem("loggedInUser")) {
+                alert("You must be logged in to apply.");
+                showLogin();
+                return;
+            }
+            alert(`Application submitted for ${jobTitle}`);
+        }
+
+        showHome();
+    </script>
+
+</body>
+</html>
