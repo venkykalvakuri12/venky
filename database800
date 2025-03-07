@@ -1,0 +1,103 @@
+create database naidu;
+use naidu;
+CREATE TABLE Student (
+    snum INTEGER PRIMARY KEY,
+    sname VARCHAR(100),
+    major VARCHAR(100),
+    level VARCHAR(10),
+    age INTEGER
+);
+CREATE TABLE Faculty (
+    fid INTEGER PRIMARY KEY,
+    fname VARCHAR(100),
+    deptid INTEGER
+);
+CREATE TABLE Class (
+    name VARCHAR(100) PRIMARY KEY,
+    meets_at VARCHAR(100),
+    room VARCHAR(10),
+    fid INTEGER,
+    FOREIGN KEY (fid) REFERENCES Faculty(fid)
+);
+CREATE TABLE Enrolled (
+    snum INTEGER,
+    cname VARCHAR(100),
+    PRIMARY KEY (snum, cname),
+    FOREIGN KEY (snum) REFERENCES Student(snum),
+    FOREIGN KEY (cname) REFERENCES Class(name)
+);
+INSERT INTO Student (snum, sname, major, level, age) VALUES
+(1, 'Alice', 'Computer Science', 'FR', 18),
+(2, 'Bob', 'Mathematics', 'SO', 19),
+(3, 'Charlie', 'Physics', 'JR', 20),
+(4, 'David', 'Biology', 'SR', 21),
+(5, 'Eva', 'Chemistry', 'FR', 18),
+(6, 'Frank', 'Computer Science', 'SO', 19);
+INSERT INTO Faculty (fid, fname, deptid) VALUES
+(1, 'Dr. Smith', 101),
+(2, 'Dr. Johnson', 102),
+(3, 'Dr. Lee', 103),
+(4, 'Dr. Brown', 104);
+INSERT INTO Class (name, meets_at, room, fid) VALUES
+('CS101', '10:00 AM', 'R128', 1),
+('MATH101', '11:00 AM', 'R129', 2),
+('PHYS101', '12:00 PM', 'R130', 3),
+('BIO101', '1:00 PM', 'R128', 4);
+INSERT INTO Enrolled (snum, cname) VALUES
+(1, 'CS101'),
+(1, 'MATH101'),
+(2, 'MATH101'),
+(3, 'PHYS101'),
+(4, 'BIO101'),
+(5, 'CS101'),
+(6, 'MATH101'),
+(6, 'PHYS101');
+SELECT DISTINCT C.name
+FROM Class C
+LEFT JOIN Enrolled E ON C.name = E.cname
+GROUP BY C.name, C.room 
+HAVING C.room = 'R128' OR COUNT(E.snum) >= 5 
+ORDER BY C.name;
+SELECT level, AVG(age) AS averageage
+FROM Student 
+GROUP BY level;
+SELECT level, AVG(age) AS averageage
+FROM Student 
+WHERE level != 'JR' 
+GROUP BY level;
+SELECT s.sname
+FROM Student s
+JOIN Enrolled e ON s.snum = e.snum
+GROUP BY s.snum, s.sname
+HAVING COUNT(e.cname) = (
+    SELECT MAX(class_count)
+    FROM (
+        SELECT COUNT(cname) AS class_count
+        FROM Enrolled
+        GROUP BY snum
+    ) AS counts
+);
+SELECT age, level
+FROM (
+    SELECT age, level, COUNT(*) AS count_level,
+           ROW_NUMBER() OVER (PARTITION BY age ORDER BY COUNT(*) DESC) AS rn
+    FROM Student
+    GROUP BY age, level
+) AS ranked_levels
+WHERE rn = 1;
+SELECT age, level
+FROM Student s1
+WHERE (age, level) IN (
+    SELECT age, level
+    FROM Student s2
+    GROUP BY age, level
+    HAVING COUNT(*) = (
+        SELECT MAX(level_count)
+        FROM (
+            SELECT COUNT(*) AS level_count
+            FROM Student
+            WHERE age = s2.age
+            GROUP BY level
+        ) AS counts
+    )
+);
