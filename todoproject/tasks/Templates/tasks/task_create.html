@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Task</title>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f0f4f8, #d9e2ec); padding: 40px;">
+
+    <div style="max-width: 480px; margin: auto; background-color: #ffffff; padding: 30px 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
+        <h1 style="text-align: center; color: #2f3e46; margin-bottom: 30px;">📝 Create New Task</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Title Field -->
+            <label for="title" style="display: block; margin-bottom: 8px; font-weight: 600; color: #334e68;">Title</label>
+            <input type="text" name="title" id="title" required
+                   style="width: 100%; padding: 12px 14px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; background-color: #f9f9f9;">
+
+            <!-- Description Field -->
+            <label for="description" style="display: block; margin-bottom: 8px; font-weight: 600; color: #334e68;">Description</label>
+            <textarea name="description" id="description"
+                      style="width: 100%; padding: 12px 14px; height: 100px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; background-color: #f9f9f9;"></textarea>
+
+            <!-- Submit Button -->
+            <button type="submit"
+                    style="margin-top: 25px; width: 100%; padding: 12px 0; background-color: #3b82f6; color: white; font-weight: bold; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease;">
+                ➕ Create Task
+            </button>
+        </form>
+
+        <!-- Back to List Link -->
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="{% url 'tasks:task_list' %}"
+               style="color: #3b82f6; text-decoration: none; font-weight: 500; font-size: 15px;">
+                ← Back to Task List
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
+

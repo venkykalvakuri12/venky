@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task List</title>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; padding: 40px;">
+
+    <div style="max-width: 700px; margin: auto;">
+        <h1 style="text-align: center; color: #2f3e46;">🗂️ Task List</h1>
+
+        <div style="text-align: right; margin-bottom: 25px;">
+            <a href="{% url 'tasks:task_create' %}"
+               style="padding: 10px 20px; background-color: #3b82f6; color: white; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px;">
+                ➕ Add New Task
+            </a>
+        </div>
+
+        <ul style="list-style: none; padding: 0;">
+            {% for task in tasks %}
+                <li style="background-color: white; margin-bottom: 15px; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center;">
+
+                    <div style="flex-grow: 1;">
+                        <strong style="font-size: 16px; color: #1e293b;">{{ task.title }}</strong><br>
+                        <span style="color: #555;">{{ task.description }}</span><br>
+                        <span style="font-size: 13px; font-weight: bold; color: {% if task.completed %}green{% else %}orange{% endif %};">
+                            {% if task.completed %}✔️ Completed{% else %}⏳ Pending{% endif %}
+                        </span>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <a href="{% url 'tasks:task_update' task.id %}"
+                           style="padding: 6px 14px; background-color: #facc15; color: black; border-radius: 5px; text-decoration: none; font-size: 13px;">
+                            ✏️ Edit
+                        </a>
+                        <a href="{% url 'tasks:task_delete' task.id %}"
+                           style="padding: 6px 14px; background-color: #ef4444; color: white; border-radius: 5px; text-decoration: none; font-size: 13px;">
+                            🗑️ Delete
+                        </a>
+                    </div>
+                </li>
+            {% empty %}
+                <li style="text-align: center; color: #555; font-size: 16px;">No tasks yet!</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>
